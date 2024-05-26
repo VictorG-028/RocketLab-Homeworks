@@ -1,0 +1,71 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id Int [pk, increment]
+  name String [not null]
+  email String [unique, not null]
+  currency String [not null]
+  balance Float [not null, default: 0]
+  addresses Address [not null]
+  password String [not null]
+  orders Order [not null]
+}
+
+Table Address {
+  id Int [pk, increment]
+  street String [not null]
+  number String [not null]
+  city String [not null]
+  state String [not null]
+  zipCode String [not null]
+  userId Int [not null]
+  user User [not null]
+}
+
+Table Product {
+  id Int [pk, increment]
+  imageUrl String [not null]
+  name String [not null, default: '']
+  price Float [not null]
+  currency String [not null]
+  description String [not null, default: '']
+  readyToShipToday Boolean [not null, default: false]
+  brand String [not null, default: '']
+  model String [not null, default: '']
+  color String [not null, default: '']
+  connectivity String [not null, default: '']
+  quantity Int [not null, default: 0]
+  isRemoved Boolean [not null, default: false]
+  orders OrderProduct [not null]
+}
+
+Table Order {
+  id Int [pk, increment]
+  cost Float [not null]
+  date DateTime [default: `now()`, not null]
+  userId Int [not null]
+  user User [not null]
+  products OrderProduct [not null]
+}
+
+Table OrderProduct {
+  orderId Int [not null]
+  order Order [not null]
+  productId Int [not null]
+  product Product [not null]
+  quantity Int [not null]
+
+  indexes {
+    (orderId, productId) [pk]
+  }
+}
+
+Ref: Address.userId > User.id
+
+Ref: Order.userId > User.id
+
+Ref: OrderProduct.orderId > Order.id
+
+Ref: OrderProduct.productId > Product.id

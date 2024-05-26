@@ -1,0 +1,17 @@
+version: '1.0'
+services:
+
+  my_api_container:
+    build:
+      context: ./
+    image: teste-tag:latest
+    ports:
+      - 3000:3000
+    container_name: teste_visagio_rocketlab
+    networks:
+      - visagio_rocketlab_net
+
+
+networks:
+  visagio_rocketlab_net:
+    driver: "bridge"
