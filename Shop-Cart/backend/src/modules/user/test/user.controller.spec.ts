@@ -56,7 +56,7 @@ describe('UserController', () => {
             'balance must be a number conforming to the specified constraints',
             'password must be longer than or equal to 8 characters'
           ],
-          error: 'Bad Request',
+          error: 'Bad Request. Stopped by some validator.',
           statusCode: 400
         });
       // expect(service.create).not.toHaveBeenCalled(); // TODO
@@ -83,10 +83,10 @@ describe('UserController', () => {
 
     it("apply id pipe and throw error when passing invalid id", async () => {
       const mockParseIntPipe = jest.spyOn(service, 'findOne').mockImplementation(() => {
-        throw new HttpException('Bad Request. Invalid ID format.', HttpStatus.BAD_REQUEST);
+        throw new HttpException('Bad Request. Stopped by some validator.', HttpStatus.BAD_REQUEST);
       });
 
-      await expect(controller.findOne(invalidId)).rejects.toThrow('Bad Request. Invalid ID format.');
+      await expect(controller.findOne(invalidId)).rejects.toThrow('Bad Request. Stopped by some validator.');
       mockParseIntPipe.mockRestore();
     });
   });
@@ -108,7 +108,7 @@ describe('UserController', () => {
         .expect(400)
         .expect({
           "message": ['name should not be empty'],
-          "error": "Bad Request",
+          "error": "Bad Request. Stopped by some validator.",
           "statusCode": 400
         });
     });
@@ -120,7 +120,7 @@ describe('UserController', () => {
         .expect(400)
         .expect({
           "message": "Validation failed (numeric string is expected)",
-          "error": "Bad Request",
+          "error": "Bad Request. Stopped by some validator.",
           "statusCode": 400
         });
     });

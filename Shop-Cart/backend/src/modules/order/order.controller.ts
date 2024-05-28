@@ -11,7 +11,7 @@ export class OrderController {
   @Post()
   @ApiOperation({ summary: 'Create a new order' })
   @ApiResponse({ status: 201, description: 'The order has been successfully created.' })
-  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiResponse({ status: 400, description: 'Bad Request. Stopped by some validator.' })
   async create(@Body() createOrderDto: CreateOrderDto) {
     return await this.orderService.create(createOrderDto);
   }
@@ -19,7 +19,7 @@ export class OrderController {
   @Get("user/:userId")
   @ApiOperation({ summary: 'Retrieve all orders for a user' })
   @ApiResponse({ status: 200, description: 'Return all orders for the user.' })
-  @ApiResponse({ status: 400, description: 'Bad Request. Invalid ID format.' })
+  @ApiResponse({ status: 400, description: 'Bad Request. Stopped by some validator.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
   @UsePipes(new ParseIntPipe({ errorHttpStatusCode: HttpStatus.BAD_REQUEST }))
   async findAllUserOrders(@Param('userId') userId: string) {

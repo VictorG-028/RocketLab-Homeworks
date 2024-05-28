@@ -42,7 +42,7 @@ export class UserService {
   }
 
   async findAll() {
-    return this.prisma.user.findMany();
+    return await this.prisma.user.findMany();
   }
 
   async findOne(id: number) {
@@ -60,7 +60,7 @@ export class UserService {
   async update(id: number, updateUserDto: UpdateUserDto) {
     await this.findOne(id);
 
-    const updatedUser = this.prisma.user.update({
+    const updatedUser = await this.prisma.user.update({
       where: { id },
       data: updateUserDto,
     });
@@ -68,13 +68,14 @@ export class UserService {
     return null;
   }
 
-  async remove(id: number) {
-    await this.findOne(id);
+  // Broken, see controller Delete(':id') route for more info.
+  // async remove(id: number) {
+  //   await this.findOne(id);
 
-    const deletedUser = this.prisma.user.delete({
-      where: { id }
-    });
+  //   const deletedUser = await this.prisma.user.delete({
+  //     where: { id }
+  //   });
 
-    return null;
-  }
+  //   return null;
+  // }
 }

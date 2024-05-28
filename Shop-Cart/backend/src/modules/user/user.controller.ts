@@ -15,7 +15,7 @@ export class UserController {
   @Post()
   @ApiOperation({ summary: 'Create user' })
   @ApiResponse({ status: 201, description: 'The user has been successfully created.' })
-  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiResponse({ status: 400, description: 'Bad Request. Stopped by some validator.' })
   async create(@Body(applyBodyValidation) createUserDto: CreateUserDto) {
     return await this.userService.create(createUserDto);
   }
@@ -30,7 +30,7 @@ export class UserController {
   @Get(':id')
   @ApiOperation({ summary: 'Get user by ID' })
   @ApiResponse({ status: 200, description: 'Return the user.' })
-  @ApiResponse({ status: 400, description: 'Bad Request. Invalid ID format.' })
+  @ApiResponse({ status: 400, description: 'Bad Request. Stopped by some validator.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
   @UsePipes(new ParseIntPipe({ errorHttpStatusCode: HttpStatus.BAD_REQUEST }))
   async findOne(@Param('id', applyIdValidation) id: string) {
@@ -40,7 +40,7 @@ export class UserController {
   @Patch(':id')
   @ApiOperation({ summary: 'Update user by ID' })
   @ApiResponse({ status: 200, description: 'The user has been successfully updated.' })
-  @ApiResponse({ status: 400, description: 'Bad Request. Invalid ID format.' })
+  @ApiResponse({ status: 400, description: 'Bad Request. Stopped by some validator.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
   async update(
     @Param('id', applyIdValidation) id: string,
@@ -49,12 +49,13 @@ export class UserController {
     return await this.userService.update(+id, updateUserDto);
   }
 
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete user by ID' })
-  @ApiResponse({ status: 200, description: 'The user has been successfully deleted.' })
-  @ApiResponse({ status: 400, description: 'Bad Request. Invalid ID format.' })
-  @ApiResponse({ status: 404, description: 'User not found.' })
-  async remove(@Param('id', applyIdValidation) id: string) {
-    return await this.userService.remove(+id);
-  }
+  // TODO: service remove method is broken, need to delete all user related rows or mark user as deleted with new column in prisma.schema 
+  // @Delete(':id')
+  // @ApiOperation({ summary: 'Delete user by ID' })
+  // @ApiResponse({ status: 200, description: 'The user has been successfully deleted.' })
+  // @ApiResponse({ status: 400, description: 'Bad Request. Stopped by some validator.' })
+  // @ApiResponse({ status: 404, description: 'User not found.' })
+  // async remove(@Param('id', applyIdValidation) id: string) {
+  //   return await this.userService.remove(+id);
+  // }
 }
