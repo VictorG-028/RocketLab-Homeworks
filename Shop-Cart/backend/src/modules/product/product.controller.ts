@@ -69,11 +69,12 @@ export class ProductController {
     return await this.productService.remove(+id);
   }
 
-  @Get('search')
+  // TODO: use get with @query instead of post with @body
+  @Post('search')
   @ApiOperation({ summary: 'Retrieve multiple products by their IDs' })
   @ApiResponse({ status: 200, description: 'Returns searched products. Can return Empty array.' })
   @ApiResponse({ status: 400, description: 'Bad Request. Stopped by some validator.' })
-  async search(@Query() searchProductByPropsDto: SearchProductByPropsDto) {
+  async search(@Body(applyBodyValidation) searchProductByPropsDto: SearchProductByPropsDto) {
     return await this.productService.search(searchProductByPropsDto);
   }
 }

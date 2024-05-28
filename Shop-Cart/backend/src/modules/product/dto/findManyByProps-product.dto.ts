@@ -21,7 +21,7 @@ export class SearchProductByPropsDto {
   @Min(0)
   minQuantity?: number;
 
-  @ApiProperty({ description: 'Query used to find a prop in product that match a word in this query.', example: 'Razer mouse wireless' })
+  @ApiProperty({ description: 'Query used to find a prop in product that match a word in this query.', example: 'canot be empty and is optional in body' })
   @IsNotEmpty()
   @IsOptional()
   @IsString()

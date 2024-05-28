@@ -96,10 +96,12 @@ describe('UserService', () => {
 
   describe('remove', () => {
     it("should delegate to findOne the validation of existance of id, return null and recive an number id", async () => {
+      throw new Error("This test is expected to fail until the TODO in the user.controller.ts is completed.");
+
       const findOneSpy = jest.spyOn(service, 'findOne').mockResolvedValue(userElement);
       const updateSpy = jest.spyOn(mockPrismaService.user, 'delete').mockResolvedValue(deletedUser);
 
-      await service.remove(+id);
+      // await service.remove(+id);
 
       expect(findOneSpy).toHaveBeenCalledWith(+id);
       expect(updateSpy).toHaveBeenCalledWith({

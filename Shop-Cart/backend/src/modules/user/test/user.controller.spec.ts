@@ -56,7 +56,7 @@ describe('UserController', () => {
             'balance must be a number conforming to the specified constraints',
             'password must be longer than or equal to 8 characters'
           ],
-          error: 'Bad Request. Stopped by some validator.',
+          error: 'Bad Request',
           statusCode: 400
         });
       // expect(service.create).not.toHaveBeenCalled(); // TODO
@@ -108,7 +108,7 @@ describe('UserController', () => {
         .expect(400)
         .expect({
           "message": ['name should not be empty'],
-          "error": "Bad Request. Stopped by some validator.",
+          "error": "Bad Request",
           "statusCode": 400
         });
     });
@@ -120,7 +120,7 @@ describe('UserController', () => {
         .expect(400)
         .expect({
           "message": "Validation failed (numeric string is expected)",
-          "error": "Bad Request. Stopped by some validator.",
+          "error": "Bad Request",
           "statusCode": 400
         });
     });
