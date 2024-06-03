@@ -12,6 +12,7 @@ export class OrderController {
   @ApiOperation({ summary: 'Create a new order' })
   @ApiResponse({ status: 201, description: 'The order has been successfully created.' })
   @ApiResponse({ status: 400, description: 'Bad Request. Stopped by some validator.' })
+  @ApiResponse({ status: 412, description: 'Insuficient balance or not enough item in stock' })
   async create(@Body() createOrderDto: CreateOrderDto) {
     return await this.orderService.create(createOrderDto);
   }

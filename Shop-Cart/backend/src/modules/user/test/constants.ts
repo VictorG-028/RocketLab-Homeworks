@@ -1,18 +1,23 @@
+import { AddressDto } from "../dto/Address.dto";
 import { CreateUserDto } from "../dto/create-user.dto";
 import { UpdateUserDto } from "../dto/update-user.dto";
+
+const address: AddressDto = {
+  id: 1,
+  userId: 1,
+  street: "Rua fulano",
+  city: "Recife",
+  state: "Brasil",
+  number: "123",
+  zipCode: "123456-789"
+};
 
 export const validCreateUserDto: CreateUserDto = {
   email: 'test@example.com',
   password: 'password',
   name: 'test',
   currency: 'BRL',
-  address: {
-    street: "Rua fulano",
-    city: "Recife",
-    state: "Brasil",
-    number: "123",
-    zipCode: "123456-789"
-  }
+  addresses: [address]
 };
 export const validCreatedUserResponse = {
   id: 1,
@@ -20,7 +25,7 @@ export const validCreatedUserResponse = {
   ...validCreateUserDto,
 };
 export const validAddressResponse = {
-  ...validCreateUserDto.address,
+  ...validCreateUserDto.addresses,
   id: 1,
   userId: validCreatedUserResponse.id
 };

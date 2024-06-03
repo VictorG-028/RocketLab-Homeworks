@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, PreconditionFailedException } from '@nestjs/common';
 import { PrismaService } from '../../database/PrismaService';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UserService } from '../user/user.service';
@@ -13,7 +13,26 @@ export class OrderService {
     const user = await this.userService.findOne(userId);
 
     if (user.balance < cost) {
-      throw new BadRequestException('Insufficient balance');
+      throw new PreconditionFailedException('Insufficient balance');
+    }
+
+    const stocks = await this.prisma.product.findMany({
+      where: {
+        id: { in: products.map(p => p.id) }
+      },
+      select: {
+        id: true,
+        quantity: true
+      }
+    });
+
+    const insufficientStock = stocks.some((stock) => {
+      const requestedQuantity = products.find(p => p.id === stock.id)?.quantity || 0;
+      return stock.quantity < requestedQuantity;
+    });
+
+    if (insufficientStock) {
+      throw new PreconditionFailedException('Item does not have sufficient stock');
     }
 
     await this.prisma.user.update({
@@ -41,6 +60,19 @@ export class OrderService {
     await this.prisma.orderProduct.createMany({
       data: orderProducts,
     });
+
+    await this.prisma.$transaction(
+      products.map((product) => {
+        return this.prisma.product.update({
+          where: { id: product.id },
+          data: {
+            quantity: {
+              decrement: product.quantity
+            }
+          },
+        });
+      })
+    );
 
     return order;
   }

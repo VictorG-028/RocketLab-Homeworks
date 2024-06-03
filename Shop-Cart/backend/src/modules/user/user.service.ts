@@ -3,13 +3,16 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../../database/PrismaService';
 import * as bcrypt from 'bcrypt';
+import { Prisma } from '@prisma/client';
+import { AddressDto } from './dto/Address.dto';
+
 
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) { }
 
   async create(createUserDto: CreateUserDto) {
-    const { email, password, address, ...otherData } = createUserDto;
+    const { email, password, addresses: address, ...otherData } = createUserDto;
     const userAlreadyExists = await this.prisma.user.findUnique({
       where: { email },
     });
@@ -24,18 +27,12 @@ export class UserService {
       data: {
         email: email,
         password: hashedPassword,
-        ...otherData
+        ...otherData,
+        addresses: {
+          create: createUserDto.addresses,
+        },
       },
     });
-
-    if (createUserDto.address) {
-      await this.prisma.address.create({
-        data: {
-          userId: userDatabaseData.id,
-          ...createUserDto.address
-        },
-      });
-    }
 
     const { password: shouldNotReturn, ...userReturnData } = userDatabaseData;
     return userReturnData;
@@ -48,6 +45,7 @@ export class UserService {
   async findOne(id: number) {
     const found = await this.prisma.user.findUnique({
       where: { id },
+      include: { addresses: true }
     });
 
     if (!found) {
@@ -60,12 +58,31 @@ export class UserService {
   async update(id: number, updateUserDto: UpdateUserDto) {
     await this.findOne(id);
 
+    const addressUpdates = updateUserDto.addresses?.map(address => ({
+      where: { id: address.id },
+      data: {
+        street: address.street,
+        number: address.number,
+        city: address.city,
+        state: address.state,
+        zipCode: address.zipCode,
+      },
+    }));
+
+    const prismaUpdateData: Prisma.UserUpdateInput = {
+      ...updateUserDto,
+      addresses: {
+        updateMany: addressUpdates,
+      },
+    };
+
     const updatedUser = await this.prisma.user.update({
       where: { id },
-      data: updateUserDto,
+      data: prismaUpdateData,
+      include: { addresses: true }
     });
 
-    return null;
+    return updatedUser;
   }
 
   // Broken, see controller Delete(':id') route for more info.

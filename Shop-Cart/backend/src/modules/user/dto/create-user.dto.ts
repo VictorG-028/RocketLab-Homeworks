@@ -1,11 +1,12 @@
-import { IsEmail, IsNotEmpty, IsString, IsOptional, IsNumber, Min, IsIn, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, IsOptional, IsNumber, Min, IsIn, MinLength, ValidateNested } from 'class-validator';
 import { AddressDto } from './Address.dto';
 import { POSSIBLE_CURRENCIES } from '../../../Common/Currency';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 
 export class CreateUserDto {
-  // @ApiProperty({ description: 'Optional id that is automatically generated.', example: 1 })
+  // @ApiProperty({ description: '[Optional] id that is automatically generated.', example: 1 })
   // @IsOptional()
   // @IsNumber()
   // id?: number;
@@ -30,13 +31,15 @@ export class CreateUserDto {
   @Min(0)
   balance?: number;
 
-  @ApiProperty({ description: 'User pass with length >8', example: 'someStrongPass' })
+  @ApiProperty({ description: 'User pass with length >= 8', example: 'someStrongPass' })
   @IsNotEmpty()
   @IsString()
   @MinLength(8)
   password: string;
 
-  @ApiProperty({ description: '[Optional] user address', example: { "street": "St. example", "number": "123", "city": "CityName", "state": "Brazil", "zipCode": "123123-123" } })
+  @ApiProperty({ description: '[Optional] array of address', example: [{ "street": "St. example", "number": "123", "city": "CityName", "state": "Brazil", "zipCode": "123123-123" }] })
   @IsOptional()
-  address?: AddressDto;
+  @ValidateNested({ each: true })
+  @Type(() => AddressDto)
+  addresses?: AddressDto[];
 }
