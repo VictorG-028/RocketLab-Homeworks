@@ -4,7 +4,7 @@ import { PrismaService } from '../../../database/PrismaService';
 import { NotFoundException } from '@nestjs/common';
 import { mockPrismaService, validCreatedUserResponse, userElement, validCreateUserDto, validUpdateuserDto as validUpdateUserDto, id, deletedUser, validAddressResponse, updatedUserResponse } from './constants';
 import { hash as bcryptHash } from 'bcrypt';
-
+//Add swagger info and validation to cycle and user modules
 jest.mock('bcrypt', () => ({
   hash: jest.fn().mockResolvedValue('hashedPassword'),
 }));
